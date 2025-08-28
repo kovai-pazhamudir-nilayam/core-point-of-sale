@@ -79,9 +79,11 @@ podAntiAffinity:
 
 environmentVariables:
   ENVIRONMENT: PROD
-  CORE_KPN_URI: https://kcloud.kovaipazhamudir.com/mobile
-  CORE_KPN_IMAGE_BASE_URL: https://ibo.com
-  AUTHN_SERVICE_URI: https://ibo.com
+  LOG_LEVEL: info
+  CORE_NETWORK_SERVICE_URI: http://core-network.core-fulfillment.svc.cluster.local
+  CORE_PAYMENT_SERVICE_URI: http://core-payment-service.core-commerce.svc.cluster.local
+  POINT_OF_SALE_EVENT_TOPIC: "point-of-sale-events"
+  IS_AUDIT_ENALBLED: true
 
 gcp:
   enabled: false
