@@ -3,24 +3,13 @@ const KnexQueryBuilder = require("knex/lib/query/querybuilder");
 const PAGE_SIZE = 10;
 const CURRENT_PAGE = 1;
 
-const EXCLUDED_ATTR_FROM_COUNT = [
-  "order",
-  "columns",
-  "limit",
-  "offset",
-  "group",
-  "select"
-];
+const EXCLUDED_ATTR_FROM_COUNT = ["order", "columns", "limit", "offset", "group", "select"];
 
-function paginate({
-  page_size = PAGE_SIZE,
-  current_page = CURRENT_PAGE,
-  distinctWith
-}) {
+function paginate({ pageSize = PAGE_SIZE, currentPage = CURRENT_PAGE, distinctWith }) {
   const countByQuery = this.clone();
 
-  const page = Math.max(current_page || 1);
-  const offset = (page - 1) * page_size;
+  const page = Math.max(currentPage || 1);
+  const offset = (page - 1) * pageSize;
 
   /**
    * Remove statements that will make things bad with count
@@ -37,23 +26,22 @@ function paginate({
     countByQuery.count("* as total");
   }
 
-  return Promise.all([
-    countByQuery.first(),
-    this.offset(offset).limit(page_size)
-  ]).then(([counter, result]) => {
-    const total = Number(counter.total);
-    return {
-      data: result,
-      meta: {
-        pagination: {
-          total_items: total,
-          current_page: page,
-          page_size,
-          total_pages: Math.ceil(total / page_size)
+  return Promise.all([countByQuery.first(), this.offset(offset).limit(pageSize)]).then(
+    ([counter, result]) => {
+      const total = Number(counter.total);
+      return {
+        data: result,
+        meta: {
+          pagination: {
+            total,
+            page,
+            page_size: pageSize,
+            total_pages: Math.ceil(total / pageSize)
+          }
         }
-      }
-    };
-  });
+      };
+    }
+  );
 }
 
 module.exports = function setupPagination(knex) {

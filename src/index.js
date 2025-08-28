@@ -1,76 +1,84 @@
 require("dotenv").config();
 const fastifyEnv = require("@fastify/env");
 const fastifyHealthcheck = require("fastify-healthcheck");
-const envSchema = require("env-schema");
 const swagger = require("@fastify/swagger");
 const swaggerUi = require("@fastify/swagger-ui");
 const fastifyMetrics = require("fastify-metrics");
 
 const { envSchema: schema } = require("./app/commons/schemas/envSchemas");
 const { knexConfig } = require("../config/index");
-const routes = require("./app/users/routes");
+
+// import routes
+const terminalRoutes = require("./app/terminal/routes");
+const posModesRoutes = require("./app/pos-config/routes");
+const posScanRoutes = require("./app/pos-scan/routes");
+const outletConfigRoutes = require("./app/outlet-config/routes");
+const FeatureConfigurationRoutes = require("./app/feature-config/routes");
+const OutletDeploymentRoutes = require("./app/outlet-deployment/routes");
+const RolloutFeatureConfigRoutes = require("./app/rollout-feature-config/routes");
 
 // PLUGINS
 const ajv = require("./app/plugins/ajv");
-const memCache = require("./app/plugins/mem-cache");
 const knex = require("./app/plugins/knex");
-const readGcpSecret = require("./app/plugins/readGcpSecret");
 const httpClient = require("./app/plugins/httpClient");
 const pubsub = require("./app/plugins/pubsub");
-const cloudBucket = require("./app/plugins/cloudBucket");
-const artifactPlugin = require("./app/plugins/artifact-file-upload");
 
 const {
   extractLogTrace,
   requestLogging,
-  responseLogging
+  responseLogging,
+  setChildLogger
 } = require("./app/hooks/logging");
 
 const {
   SWAGGER_CONFIGS,
-  SWAGGER_UI_CONFIGS,
+  // SWAGGER_UI_CONFIGS,
   SERVER_CONFIGS
 } = require("./app/commons/configs");
 const { METRICS_CONFIGS } = require("./app/commons/metrics.config");
 
 const { errorHandler } = require("./app/errorHandler");
 
+const setupAllShutdownHandlers = require("./shutdown");
+
 async function create() {
   // eslint-disable-next-line global-require
   const fastify = require("fastify")(SERVER_CONFIGS);
 
-  fastify.setErrorHandler(errorHandler());
-  await fastify.register(fastifyHealthcheck);
-
   // Env vars plugin
-  await fastify.register(fastifyEnv, {
-    dotenv: true,
-    schema
-  });
+  await fastify.register(fastifyEnv, { dotenv: true, schema });
+
+  fastify.setErrorHandler(errorHandler());
+  fastify.register(fastifyHealthcheck);
 
   // HOOKS
   fastify.addHook("onRequest", extractLogTrace);
   fastify.addHook("preValidation", requestLogging);
-  fastify.addHook("onResponse", responseLogging);
+  fastify.addHook("preValidation", setChildLogger);
+  fastify.addHook("onSend", responseLogging);
 
   // PLUGINS
-  await fastify.register(ajv);
-  await fastify.register(httpClient);
-  await fastify.register(knex, knexConfig);
-  await fastify.register(memCache);
-  await fastify.register(readGcpSecret);
-  await fastify.register(swagger, SWAGGER_CONFIGS);
-  await fastify.register(swaggerUi, SWAGGER_UI_CONFIGS);
+  fastify.register(ajv);
+  fastify.register(httpClient);
+  fastify.register(knex, knexConfig);
   await fastify.register(pubsub);
-  await fastify.register(cloudBucket);
-  await fastify.register(artifactPlugin);
+
+  if (process.env.ENVIRONMENT !== "PROD") {
+    fastify.register(swagger, SWAGGER_CONFIGS);
+    fastify.register(swaggerUi, SWAGGER_CONFIGS);
+  }
 
   // ROUTES
-  await fastify.register(routes, { prefix: "/v1" });
+  fastify.register(terminalRoutes, { prefix: "/v1" });
+  fastify.register(posModesRoutes, { prefix: "/v1" });
+  fastify.register(outletConfigRoutes, { prefix: "/v1" });
+  fastify.register(posScanRoutes, { prefix: "/v1" });
+  fastify.register(FeatureConfigurationRoutes, { prefix: "/v1" });
+  fastify.register(OutletDeploymentRoutes, { prefix: "/v1" });
+  fastify.register(RolloutFeatureConfigRoutes, { prefix: "/v1" });
 
-  // Fastify-metrics
   if (process.env.NODE_ENV !== "test") {
-    await fastify.register(fastifyMetrics, METRICS_CONFIGS);
+    fastify.register(fastifyMetrics, METRICS_CONFIGS);
   }
 
   return fastify;
@@ -78,22 +86,12 @@ async function create() {
 
 async function start() {
   const fastify = await create();
-  const defaultSchema = {
-    type: "object",
-    properties: {
-      HOST: {
-        type: "string",
-        default: "0.0.0.0"
-      },
-      PORT: {
-        type: "integer",
-        default: 4444
-      }
-    }
-  };
-  const config = envSchema({ schema: defaultSchema, dotenv: true });
+  await fastify.ready();
+
+  setupAllShutdownHandlers({ fastify });
+
   // Run the server!
-  fastify.listen({ port: config.PORT, host: config.HOST }, (err, address) => {
+  fastify.listen({ port: fastify?.config?.PORT, host: fastify?.config?.HOST }, (err, address) => {
     /* istanbul ignore next */
     if (err) {
       fastify.log.error(err);
@@ -101,13 +99,12 @@ async function start() {
     }
     // eslint-disable-next-line no-console
     console.log(`server listening on ${address}`);
+    // eslint-disable-next-line no-console
+    // console.log("Environment Variables:", JSON.stringify(fastify.config));
   });
 }
 
-/* istanbul ignore next */
-if (process.env.NODE_ENV !== "test") {
-  start();
-}
+if (process.env.NODE_ENV !== "test") start();
 
 module.exports = {
   create,

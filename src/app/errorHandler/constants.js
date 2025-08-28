@@ -7,7 +7,8 @@ exports.STATUS_TEXTS = {
   500: "Internal Server Error",
   502: "Bad Gateway",
   503: "Service Unavailable",
-  504: "Gateway Timeout"
+  504: "Gateway Timeout",
+  412: "Action not allowed"
 };
 
 exports.STATUS_CODES = {
@@ -23,7 +24,8 @@ exports.STATUS_CODES = {
   502: "BAD_GATEWAY",
   503: "SERVICE_UNAVAILABLE",
   504: "GATEWAY_TIMEOUT",
-  ECONNRESET: "ECONNRESET"
+  ECONNRESET: "ECONNRESET",
+  412: "ACTION_NOT_ALLOWED"
 };
 
 exports.POSTGRES_DB_ERRORS = {

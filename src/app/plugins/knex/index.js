@@ -1,13 +1,9 @@
 const fp = require("fastify-plugin");
-const knex = require("knex");
-const setupPaginator = require("./paginator");
-const { connectionCheck } = require("../../commons/helpers");
+const getKnexClient = require("./setup");
 
 const knexPlugin = async (fastify, options) => {
   try {
-    const db = knex({ ...options });
-    setupPaginator(db);
-    await connectionCheck(db);
+    const db = await getKnexClient({ options });
     fastify.decorate("knex", db);
   } catch (e) {
     fastify.log.error(`DB connection failed`);

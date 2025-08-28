@@ -1,33 +1,16 @@
 const fp = require("fastify-plugin");
 const httpClient = require("./axios");
 const Metrics = require("./metrics");
-const { CustomError } = require("../../errorHandler");
+const { logger } = require("../../utils/logger");
 
-function getTraceHeadersFromHeaders(headers) {
-  const headerKeys = [
-    "x-request-id",
-    "x-b3-traceid",
-    "x-b3-spanid",
-    "x-b3-parentspanid",
-    "x-b3-sampled",
-    "x-ot-span-context",
-    "x-b3-flags"
-  ];
-
-  return headerKeys.reduce(
-    (logTrace, header) =>
-      Object.assign(
-        logTrace,
-        headers[header] && {
-          [header]: headers[header]
-        }
-      ),
-    {}
-  );
-}
+const formatResponse = ({ response }) => {
+  if (!response) return null;
+  const { data, headers, status, statusText } = response;
+  return { data, headers, status, statusText };
+};
 
 const httpClientWrapper =
-  fastify =>
+  () =>
   // eslint-disable-next-line complexity
   async ({
     url,
@@ -39,26 +22,23 @@ const httpClientWrapper =
     downstream_system,
     source_system,
     domain,
-    functionality,
-    response_type,
-    exclude_response_data_logging = false
+    functionality
   }) => {
     const common = {
       request: {
         url,
         method,
         data: body,
-        path
+        path,
+        headers
       },
-      log_trace: getTraceHeadersFromHeaders(headers),
       downstream_system,
       source_system,
-      message: "REST Request Context:",
       domain,
       functionality
     };
 
-    fastify.log.info(common);
+    logger.debug({ ...common, message: `REST Request Context: ${url}` });
 
     const mInstance = Metrics.init({
       status_code: 200,
@@ -72,40 +52,36 @@ const httpClientWrapper =
         method,
         headers,
         body,
-        timeout,
-        response_type
+        timeout
       });
       mInstance.updateStatus(response.status).consume();
-      fastify.log.info({
+      logger.info({
         ...common,
         response: {
-          ...(!exclude_response_data_logging && { data: response.data }),
+          data: response.data,
           response_time: mInstance.getResponseTime(),
           status_code: response.status
         },
-        message: "REST Response Context:"
+        message: `REST Response Context: ${path}`
       });
-      return response.data;
+      return { request: common, response: formatResponse({ response }) };
     } catch (error) {
       mInstance.updateStatus(error?.response?.status || 500).consume();
-      fastify.log.error({
+      logger.error({
         ...common,
         response: {
+          code: error?.code,
           error: error?.response?.data,
           response_time: mInstance.getResponseTime(),
-          status_code: error?.response?.status || 500,
-          raw_error: error
+          status_code: error?.response?.status || error?.code || 500
         },
-        message: "REST Response Context:"
+        message: `REST Response Context: ${path}`
       });
-      if (error?.response?.status) {
-        throw CustomError.createHttpError({
-          httpCode: error.response.status,
-          errorResponse: error.response.data,
-          downstream_system
-        });
-      }
-      throw error;
+      return {
+        request: common,
+        response: formatResponse({ response: error.response }),
+        error: true
+      };
     }
   };
 

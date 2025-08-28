@@ -6,9 +6,8 @@ const headers = {
     Authorization: { type: "string" },
     "x-channel-id": {
       type: "string",
-      default: "WEB",
       enum: ["AND", "WEB", "STORE", "IOS", "COMMAND-CENTER"],
-      description: "Example values: 'APP'"
+      description: "Example values: 'AND'"
     }
   }
 };
@@ -32,8 +31,8 @@ const auditSchema = {
     api_version: { type: "string" },
     created_by: { type: "string" },
     created_at: { type: "string", format: "date-time" },
-    updated_by: { type: "string" },
-    updated_at: { type: "string", format: "date-time" }
+    last_modified_by: { type: "string" },
+    last_modified_at: { type: "string", format: "date-time" }
   }
 };
 
@@ -55,8 +54,7 @@ const customInfo = {
 const allowedChannel = {
   $id: "request-allowed-channel",
   type: "string",
-  enum: ["ONLINE", "STORE", "OMNI"],
-  default: "OMNI"
+  enum: ["AND", "WEB", "STORE", "IOS", "COMMAND-CENTER"]
 };
 
 const quantity = {
@@ -64,16 +62,16 @@ const quantity = {
   type: "object",
   required: ["quantity_number", "quantity_uom"],
   properties: {
-    quantity_number: { type: "integer" },
+    quantity_number: { type: "integer", minimum: 1 },
     quantity_uom: { type: "string" }
   }
 };
 
 exports.commonRequestSchemas = [
   auditSchema,
-  amountSchema,
   headers,
   customInfo,
   allowedChannel,
-  quantity
+  quantity,
+  amountSchema
 ];

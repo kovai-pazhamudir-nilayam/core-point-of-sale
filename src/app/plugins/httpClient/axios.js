@@ -12,24 +12,16 @@ const httpHttpsAgentOpts = {
 const client = axios.create({
   httpAgent: new http.Agent(httpHttpAgentOpts),
   httpsAgent: new https.Agent(httpHttpsAgentOpts),
-  timeout: 10000
+  timeout: 60000
 });
 
-const httpClient = ({
-  url,
-  method,
-  body,
-  headers = {},
-  timeout,
-  responseType
-}) => {
+const httpClient = ({ url, method, body, headers = {}, timeout }) => {
   return client({
     url,
     method,
     ...(body && { data: body }),
     ...(headers && { headers }),
-    ...(timeout && { timeout }),
-    ...(responseType && { responseType })
+    ...(timeout && { timeout })
   });
 };
 

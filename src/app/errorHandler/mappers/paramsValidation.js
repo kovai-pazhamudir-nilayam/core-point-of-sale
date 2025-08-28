@@ -16,13 +16,11 @@ module.exports = (error, options = DEFAULT_OPTIONS) => {
         message = `${message} '${val.params.additionalProperty}'`;
       }
       if (options.showAllowedValues && val.params && val.params.allowedValues) {
-        message = `${message}. Allowed values: '${val.params.allowedValues.join(
-          "', '"
-        )}'`;
+        message = `${message}. Allowed values: '${val.params.allowedValues.join("', '")}'`;
       }
       return { property, message, code: "REQUEST_VALIDATION_ERROR" };
     });
-    return new CustomError(400, errors);
+    return new CustomError({ httpCode: 400, errors });
   }
   return undefined;
 };

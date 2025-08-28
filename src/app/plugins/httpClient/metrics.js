@@ -1,7 +1,4 @@
-const {
-  clientHistogram,
-  clientSummary
-} = require("../../commons/metrics.config");
+const { clientHistogram, clientSummary } = require("../../commons/metrics.config");
 
 module.exports = class Metrics {
   // data: { method: string, route: string, status_code: number };

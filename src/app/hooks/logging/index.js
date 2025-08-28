@@ -1,23 +1,32 @@
+const { setLogger } = require("../../utils/logger");
+
+const ignoreLogging = request => {
+  return (
+    request.raw.url === "/health" ||
+    request.raw.url === "/metrics" ||
+    request.raw.url.includes("documentation")
+  );
+};
+
 async function requestLogging(request) {
-  if (request.url !== "/health" && request.url !== "/metrics") {
-    this.log.info({
-      message: "Incoming Request",
-      log_trace: request.logTrace,
-      request: {
-        url: request.url,
-        method: request.method,
-        query_params: request.query,
-        body: request.body,
-        raw_headers: request.headers
-      }
-    });
-  }
+  if (ignoreLogging(request)) return;
+
+  this.log.info({
+    message: "Incoming Request",
+    log_trace: request.logTrace,
+    request: {
+      url: request.url,
+      method: request.method,
+      query_params: request.query,
+      path_params: request.params,
+      raw_headers: request.headers
+    }
+  });
 }
 
 async function responseLogging(request, reply) {
-  if (request.url === "/health" || request.url === "/metrics") {
-    return;
-  }
+  if (ignoreLogging(request)) return;
+
   this.log.info({
     message: "Server Response",
     log_trace: request.logTrace,
@@ -25,10 +34,12 @@ async function responseLogging(request, reply) {
       url: request.url,
       method: request.method,
       query_params: request.query,
+      path_params: request.params,
       body: request.body,
       raw_headers: request.headers
     },
     response: {
+      // data: payload,
       status_code: reply.statusCode,
       response_time: reply.elapsedTime
     }
@@ -64,8 +75,23 @@ async function extractLogTrace(request) {
     "x-b3-flags"
   );
 }
+
+const setChildLogger = (request, reply, done) => {
+  if (ignoreLogging(request)) {
+    done();
+  } else {
+    try {
+      setLogger({ req: request, log_trace: request.logTrace }, done);
+    } catch (error) {
+      request.log.error({ error, message: "LoggerProxy Could Not Be Set" });
+      done();
+    }
+  }
+};
+
 module.exports = {
   requestLogging,
   responseLogging,
-  extractLogTrace
+  extractLogTrace,
+  setChildLogger
 };

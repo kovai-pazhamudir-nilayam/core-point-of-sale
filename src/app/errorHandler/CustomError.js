@@ -4,7 +4,7 @@ const { formatDetail } = require("./helpers");
 const { STATUS_CODES, STATUS_TEXTS } = require("./constants");
 
 module.exports = class CustomError extends Error {
-  constructor(httpCode, errors) {
+  constructor({ httpCode, errors }) {
     super();
     this._code = httpCode;
     this._errors = this.getErrorArr(errors);
@@ -34,7 +34,7 @@ module.exports = class CustomError extends Error {
 
   static create({ httpCode, message, property, code }) {
     const errors = [this.parse(message, property, code)];
-    return new CustomError(httpCode, errors);
+    return new CustomError({ httpCode, errors });
   }
 
   static createHttpError({ httpCode, errorResponse, downstream_system }) {
@@ -53,14 +53,13 @@ module.exports = class CustomError extends Error {
           message: errorResponse?.message
         });
     }
-    return new CustomError(httpCode, errors);
+    return new CustomError({ httpCode, errors });
   }
 
   static magentoMessageToCustomerMainErrorMapper(errorMessage) {
     const errorList = [
       {
-        magento_error:
-          "Magento customer id and customer_domain_id is not matched to update",
+        magento_error: "Magento customer id and customer_domain_id is not matched to update",
         customer_domain_error: {
           message: "Customer Id in Customer Domain and Magento is Not Matching",
           status_code: 500,
@@ -85,17 +84,13 @@ module.exports = class CustomError extends Error {
       }
     ];
 
-    const matchedError = errorList.find(val =>
-      errorMessage.includes(val.magento_error)
-    );
+    const matchedError = errorList.find(val => errorMessage.includes(val.magento_error));
 
     return matchedError;
   }
 
   static getStatusCodeAndErrorFromMagentoError(error) {
-    const matchedError = this.magentoMessageToCustomerMainErrorMapper(
-      error.message
-    );
+    const matchedError = this.magentoMessageToCustomerMainErrorMapper(error.message);
 
     if (matchedError) {
       return {
@@ -126,9 +121,7 @@ module.exports = class CustomError extends Error {
       default:
         return {
           status_code: 500,
-          errors: [
-            { code: "INTERNAL_SERVER_ERROR", message: "Internal Server Error" }
-          ]
+          errors: [{ code: "INTERNAL_SERVER_ERROR", message: "Internal Server Error" }]
         };
     }
   }

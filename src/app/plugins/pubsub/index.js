@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 const fp = require("fastify-plugin");
 const { PubSub } = require("@google-cloud/pubsub");
+const { logger } = require("../../utils/logger");
 
 const pubSubClient = new PubSub();
 
@@ -11,7 +12,7 @@ async function publishMessage({ eventData, eventAttributes, topic_name }) {
   return { messageId };
 }
 
-const createEvent = ({ data, entity_type, event_type, version }) => {
+const createEvent = ({ data, entity_type, event_type, version, outlet_id }) => {
   const uuid = uuidv4();
   const date = new Date();
 
@@ -23,20 +24,22 @@ const createEvent = ({ data, entity_type, event_type, version }) => {
       timestamp: String(date.getTime()),
       datetime: new Date().toISOString(),
       mime_type: "application/json",
-      version
+      version,
+      outlet_id
     },
     eventData: Buffer.from(JSON.stringify(data))
   };
 };
 
-const publishEventWrapper = fastify => {
-  return async ({ data, event_info, version = "1.0", logTrace }) => {
-    const { entity_type, event_type, topic_name } = event_info;
+const publishEventWrapper = () => {
+  return async ({ data, event_info, version = "1.0" }) => {
+    const { entity_type, event_type, topic_name, outlet_id } = event_info;
     const { eventData, eventAttributes } = createEvent({
       data,
       entity_type,
       event_type,
-      version
+      version,
+      outlet_id
     });
     try {
       const { messageId } = await publishMessage({
@@ -44,21 +47,19 @@ const publishEventWrapper = fastify => {
         eventAttributes,
         topic_name
       });
-      fastify.log.info({
+      logger.info({
         event_info,
         message: "Event publish completed",
         messageId,
-        data,
-        logTrace
+        data
       });
       return true;
-    } catch (err) {
-      fastify.log.error({
+    } catch (error) {
+      logger.error({
         event_info,
         data,
-        err,
-        message: "Publish message failed",
-        logTrace
+        error,
+        message: "Publish message failed"
       });
       return false;
     }

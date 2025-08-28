@@ -25,14 +25,12 @@ describe("CustomError", () => {
     expect(err).toBeInstanceOf(CustomError);
     expect(err.code).toBe(400);
     expect(err.response).toEqual({
-      errors: [
-        { code: "TEST", message: "{ message: 'some error' }", property: "test" }
-      ]
+      errors: [{ code: "TEST", message: "{ message: 'some error' }", property: "test" }]
     });
   });
 
   it("Should create custom error using constructor", () => {
-    const err = new CustomError(400, null);
+    const err = new CustomError({ httpCode: 400, errors: null });
     expect(err).toBeInstanceOf(CustomError);
     expect(err.code).toBe(400);
     expect(err.response).toEqual({
@@ -41,7 +39,7 @@ describe("CustomError", () => {
   });
 
   it("Should create custom error using constructor with blank object error", () => {
-    const err = new CustomError(400, {});
+    const err = new CustomError({ httpCode: 400, errors: {} });
     expect(err).toBeInstanceOf(CustomError);
     expect(err.code).toBe(400);
     expect(err.response).toEqual({
@@ -50,7 +48,7 @@ describe("CustomError", () => {
   });
 
   it("Should create custom error using constructor with blank array error", () => {
-    const err = new CustomError(400, []);
+    const err = new CustomError({ httpCode: 400, errors: [] });
     expect(err).toBeInstanceOf(CustomError);
     expect(err.code).toBe(400);
     expect(err.response).toEqual({
