@@ -64,4 +64,4 @@ jobs:
         env:
           HELM_OPTS: --set-string environmentVariables.GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID_STG }}
         run: |
-          helm upgrade --install --wait core-user-service deployment/charts/$APP_NAME --namespace core-commerce $HELM_OPTS --set image.tag=$GITHUB_SHA  -f deployment/charts/config/values-staging.yaml
+          helm upgrade --install --wait core-point-of-sale deployment/charts/$APP_NAME --namespace core-commerce $HELM_OPTS --set image.tag=$GITHUB_SHA  -f deployment/charts/config/values-staging.yaml
