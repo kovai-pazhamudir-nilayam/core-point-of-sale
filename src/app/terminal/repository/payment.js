@@ -1,5 +1,7 @@
 const { INTERNAL_SERVER_ERROR } = require("http-status-codes").StatusCodes;
-const { getAuthToken } = require("@ebono-commerce/ebono-platform-token");
+const {
+  getAuthToken
+} = require("@kovai-pazhamudir-nilayam/kpn-platform-token");
 const CustomError = require("../../errorHandler/CustomError");
 const Errors = require("../../errorHandler/domain/errors");
 
@@ -44,7 +46,8 @@ const getPaymentDetails = async ({ fastify, logTrace, data }) => {
   const { data: responseData, mappedError } = handleError({
     error,
     response,
-    downstream_system: DOWNSTREAM_CONFIG.GET_PAYMENT_BY_ORDER_NUMBER.downstream_system
+    downstream_system:
+      DOWNSTREAM_CONFIG.GET_PAYMENT_BY_ORDER_NUMBER.downstream_system
   });
 
   return {

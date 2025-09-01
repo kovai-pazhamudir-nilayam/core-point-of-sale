@@ -1,5 +1,7 @@
 const { INTERNAL_SERVER_ERROR } = require("http-status-codes").StatusCodes;
-const { getAuthToken } = require("@ebono-commerce/ebono-platform-token");
+const {
+  getAuthToken
+} = require("@kovai-pazhamudir-nilayam/kpn-platform-token");
 const CustomError = require("../../errorHandler/CustomError");
 const Errors = require("../../errorHandler/domain/errors");
 
