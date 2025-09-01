@@ -40,7 +40,7 @@ ingress:
     {}
     # kubernetes.io/ingress.class: nginx
   # kubernetes.io/tls-acme: "true"
-  uriPrefix: /catalog/
+  uriPrefix: /point-of-sale/
   hosts:
     - services-staging.kpnfarmfresh.com
     - services-staging.kpnfresh.com
