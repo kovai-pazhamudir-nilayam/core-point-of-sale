@@ -11,7 +11,7 @@ autoscaling:
   enabled: false
 
 image:
-  repository: us.gcr.io/kpn-staging/core-user-service
+  repository: us.gcr.io/kpn-staging/core-point-of-sale
   tag: $IMAGE_TAG
   pullPolicy: IfNotPresent
   pullSecret:
@@ -36,7 +36,7 @@ ingress:
     {}
     # kubernetes.io/ingress.class: nginx
   # kubernetes.io/tls-acme: "true"
-  uriPrefix: /core-user-service/
+  uriPrefix: /core-point-of-sale/
   hosts:
     - "*"
   tls: []

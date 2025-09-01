@@ -9,10 +9,10 @@ env:
   GCR_GKE_PROJECT: kpn-platform-components
   GITHUB_SHA: ${{ github.sha }}
   GKE_ZONE: asia-south1
-  IMAGE: core-user-service
+  IMAGE: core-point-of-sale
   REGISTRY_HOSTNAME: us-docker.pkg.dev
   REPOSITORY: us.gcr.io
-  APP_NAME: core-user-service
+  APP_NAME: core-point-of-sale
 
 jobs:
   node-build-deploy:

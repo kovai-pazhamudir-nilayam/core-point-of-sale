@@ -15,7 +15,7 @@ autoscaling:
   targetMemoryUtilizationPercentage: 80
 
 image:
-  repository: us-docker.pkg.dev/kpn-platform-components/us.gcr.io/core-user-service
+  repository: us-docker.pkg.dev/kpn-platform-components/us.gcr.io/core-point-of-sale
   tag: $IMAGE_TAG
   pullPolicy: IfNotPresent
   pullSecret:
