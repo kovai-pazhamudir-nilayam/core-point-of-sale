@@ -6,7 +6,7 @@ const headers = {
     Authorization: { type: "string" },
     "x-channel-id": {
       type: "string",
-      enum: ["AND", "WEB", "STORE", "IOS", "COMMAND-CENTER"],
+      enum: ["AND", "WEB", "STORE", "IOS", "COMMAND-CENTER", "POS"],
       description: "Example values: 'AND'"
     }
   }
@@ -54,7 +54,7 @@ const customInfo = {
 const allowedChannel = {
   $id: "request-allowed-channel",
   type: "string",
-  enum: ["AND", "WEB", "STORE", "IOS", "COMMAND-CENTER"]
+  enum: ["AND", "WEB", "STORE", "IOS", "COMMAND-CENTER", "POS"]
 };
 
 const quantity = {
