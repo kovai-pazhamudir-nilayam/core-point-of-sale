@@ -1,0 +1,15 @@
+const DEPLOYMENT_STATUS = {
+  PENDING: "PENDING",
+  SUCCEEDED: "SUCCEEDED",
+  FAILED: "FAILED"
+};
+
+const TYPE = {
+  SERVER: "SERVER",
+  CLIENT: "CLIENT",
+  UI: "UI"
+};
+
+const CHUNK_SIZE = 500;
+
+module.exports = { DEPLOYMENT_STATUS, CHUNK_SIZE, TYPE };

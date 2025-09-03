@@ -69,5 +69,21 @@ module.exports = {
       httpCode: ErrorCodes.DENOMINATION_MISMATCH_ERROR.httpStatusCode,
       message: ErrorCodes.DENOMINATION_MISMATCH_ERROR.message,
       code: ErrorCodes.DENOMINATION_MISMATCH_ERROR.name
+    }),
+
+  OutletMacVersionHistoryNotFoundError: error =>
+    CustomError.create({
+      httpCode: ErrorCodes.OUTLET_MAC_VERSION_HISTORY_NOT_FOUND_ERROR.httpStatusCode,
+      message: ErrorCodes.OUTLET_MAC_VERSION_HISTORY_NOT_FOUND_ERROR.message,
+      code: ErrorCodes.OUTLET_MAC_VERSION_HISTORY_NOT_FOUND_ERROR.name,
+      error
+    }),
+
+  OutletDeviceNotFoundError: ({ outlet_device_register_id }) =>
+    CustomError.create({
+      httpCode: ErrorCodes.OUTLET_DEVICE_REGISTER_NOT_FOUND_ERROR.httpStatusCode,
+      message:
+        ErrorCodes.OUTLET_DEVICE_REGISTER_NOT_FOUND_ERROR.message + outlet_device_register_id,
+      code: ErrorCodes.OUTLET_DEVICE_REGISTER_NOT_FOUND_ERROR.name
     })
 };

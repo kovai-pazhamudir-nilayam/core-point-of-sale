@@ -2,7 +2,8 @@ const schemas = require("../schemas");
 const {
   postRolloutFeatureConfig,
   getRolloutFeatureConfig,
-  deleteRolloutFeatureConfig
+  deleteRolloutFeatureConfig,
+  rolloutFeatureConfigBulkEvents
 } = require("../handlers");
 
 module.exports = async fastify => {
@@ -11,6 +12,13 @@ module.exports = async fastify => {
     url: "/",
     schema: schemas.postRolloutFeatureConfig,
     handler: postRolloutFeatureConfig(fastify)
+  });
+
+  fastify.route({
+    method: "POST",
+    url: "/bulk-events",
+    schema: schemas.rolloutFeatureConfigBulkEvents,
+    handler: rolloutFeatureConfigBulkEvents(fastify)
   });
 
   fastify.route({

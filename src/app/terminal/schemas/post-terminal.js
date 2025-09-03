@@ -12,9 +12,14 @@ const postTerminal = {
       outlet_id: { type: "string", minLength: 1 },
       terminal_id: { type: "string", minLength: 1 },
       terminal_name: { type: "string" },
+      mac_address: { type: "string" },
       status: { type: "string", enum: ["BUSY", "AVAILABLE", "SUSPENDED"] },
       is_edc_integrated: { type: "boolean" },
       is_static_qr_code_enabled: { type: "boolean" },
+      non_integrated_edc_allowed_mode: {
+        type: "string",
+        enum: ["ENABLED", "ENABLED_WITH_AUTH", "DISABLED"]
+      },
       returns_enabled_mode: {
         type: "string",
         enum: ["ENABLED", "ENABLED_WITH_AUTH", "DISABLED"]

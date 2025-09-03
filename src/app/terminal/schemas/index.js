@@ -1,6 +1,7 @@
 const getTerminalUsage = require("./get-terminal-usage");
 const getTerminal = require("./get-terminal");
 const getTerminals = require("./get-terminals");
+const getTerminalsList = require("./get-terminals-list");
 const postTerminalStatus = require("./post-terminal-status");
 const postTerminalUsage = require("./post-terminal-usage");
 const postTerminal = require("./post-terminal");
@@ -21,6 +22,7 @@ module.exports = {
   getTerminalUsage,
   getTerminal,
   getTerminals,
+  getTerminalsList,
   postTerminalStatus,
   postTerminalUsage,
   postTerminalUsageSync,

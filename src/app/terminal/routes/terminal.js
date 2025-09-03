@@ -6,6 +6,7 @@ module.exports = async fastify => {
     postTerminal,
     getTerminal,
     getTerminals,
+    getTerminalsList,
     postTerminalStatus,
     postTerminalUsage,
     getTerminalUsage,
@@ -38,6 +39,13 @@ module.exports = async fastify => {
     url: "/terminals",
     schema: schemas.getTerminals,
     handler: getTerminals(fastify)
+  });
+
+  fastify.route({
+    method: "GET",
+    url: "/terminals/list",
+    schema: schemas.getTerminalsList,
+    handler: getTerminalsList(fastify)
   });
 
   fastify.route({

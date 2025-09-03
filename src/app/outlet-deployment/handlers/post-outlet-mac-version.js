@@ -1,3 +1,4 @@
+const { StatusCodes } = require("http-status-codes");
 const { postOutletMacVersionService } = require("../services");
 
 function postOutletMacVersionHandler(fastify) {
@@ -7,7 +8,7 @@ function postOutletMacVersionHandler(fastify) {
     const { body } = request;
 
     const response = await postOutletMacVersion({ input: body });
-    return reply.code(201).send(response);
+    return reply.code(StatusCodes.CREATED).send(response);
   };
 }
 

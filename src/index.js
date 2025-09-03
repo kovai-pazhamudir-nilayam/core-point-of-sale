@@ -16,6 +16,7 @@ const outletConfigRoutes = require("./app/outlet-config/routes");
 const FeatureConfigurationRoutes = require("./app/feature-config/routes");
 const OutletDeploymentRoutes = require("./app/outlet-deployment/routes");
 const RolloutFeatureConfigRoutes = require("./app/rollout-feature-config/routes");
+const PostOutletDeviceRoutes = require("./app/outlet-device/routes");
 
 // PLUGINS
 const ajv = require("./app/plugins/ajv");
@@ -76,6 +77,7 @@ async function create() {
   fastify.register(FeatureConfigurationRoutes, { prefix: "/v1" });
   fastify.register(OutletDeploymentRoutes, { prefix: "/v1" });
   fastify.register(RolloutFeatureConfigRoutes, { prefix: "/v1" });
+  fastify.register(PostOutletDeviceRoutes, { prefix: "/v1" });
 
   if (process.env.NODE_ENV !== "test") {
     fastify.register(fastifyMetrics, METRICS_CONFIGS);

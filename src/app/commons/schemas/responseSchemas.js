@@ -38,9 +38,9 @@ const pagination = {
   $id: "response-pagination",
   type: "object",
   properties: {
-    current_page: { type: "integer" },
+    page: { type: "integer" },
     page_size: { type: "integer" },
-    total_items: { type: "integer" },
+    total: { type: "integer" },
     total_pages: { type: "integer" }
   }
 };

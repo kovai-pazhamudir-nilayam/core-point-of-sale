@@ -8,7 +8,8 @@ const headers = {
       type: "string",
       enum: ["AND", "WEB", "STORE", "IOS", "COMMAND-CENTER", "POS"],
       description: "Example values: 'AND'"
-    }
+    },
+    "x-mac-address": { type: "string" }
   }
 };
 

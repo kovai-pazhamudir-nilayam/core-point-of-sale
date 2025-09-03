@@ -60,5 +60,19 @@ module.exports = {
     message: "Mismatch in denomination declared",
     explanation: "",
     httpStatusCode: HttpStatus.BAD_REQUEST
+  },
+
+  OUTLET_MAC_VERSION_HISTORY_NOT_FOUND_ERROR: {
+    name: "OUTLET_MAC_VERSION_HISTORY_NOT_FOUND_ERROR",
+    message: "Outlet Mac Version History Doesn't Exists",
+    explanation: "",
+    httpStatusCode: HttpStatus.NOT_FOUND
+  },
+
+  OUTLET_DEVICE_REGISTER_NOT_FOUND_ERROR: {
+    name: "OUTLET_DEVICE_REGISTER_NOT_FOUND_ERROR",
+    message: "outlet device Register Doesn't Exists for given id -",
+    explanation: "",
+    httpStatusCode: HttpStatus.NOT_FOUND
   }
 };

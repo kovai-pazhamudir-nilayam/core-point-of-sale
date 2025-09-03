@@ -2,6 +2,7 @@ const { v5: uuidV5 } = require("uuid");
 const { getCurrentTimeStamp } = require("../mappers/audit-mapper");
 const { OutletMacVersionRepo } = require("../repository/outlet_mac-version");
 const { SUCCESS_RESPONSE } = require("../../commons/constant");
+const { DEPLOYMENT_STATUS } = require("../commons/constants");
 
 function postOutletMacVersionService(fastify) {
   const { createOutletMacVersion } = OutletMacVersionRepo();
@@ -20,6 +21,7 @@ function postOutletMacVersionService(fastify) {
       type,
       mac_address,
       service,
+      status: DEPLOYMENT_STATUS.PENDING,
       ...rest,
       audit: { created_at: currentTimeStamp, created_by: audit?.created_by },
       updateAudit: {

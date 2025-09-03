@@ -20,10 +20,12 @@ const getTerminals = {
         properties: {
           outlet_id: { type: "string" },
           terminal_id: { type: "string" },
+          mac_address: { type: "string" },
           terminal_name: { type: "string" },
           status: { type: "string" },
           is_edc_integrated: { type: "boolean" },
           is_static_qr_code_enabled: { type: "boolean" },
+          non_integrated_edc_allowed_mode: { type: "string" },
           edc_device: {
             type: "array",
             items: {

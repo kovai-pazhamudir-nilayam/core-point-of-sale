@@ -5,9 +5,12 @@ const TERMINAL = {
   COLUMNS: {
     TERMINAL_ID: "terminal_id",
     TERMINAL_NAME: "terminal_name",
+    MAC_ADDRESS: "mac_address",
     OUTLET_ID: "outlet_id",
     STATUS: "status",
     IS_EDC_INTEGRATED: "is_edc_integrated",
+    NON_INTEGRATED_EDC_ALLOWED_MODE: "non_integrated_edc_allowed_mode",
+    RETURNS_ENABLED_MODE: "returns_enabled_mode",
     EDC_DEVICE: "edc_device",
     PRINTER_DEVICE: "printer_device",
     IS_ACTIVE: "is_active",
@@ -36,6 +39,10 @@ function TerminalRepo() {
 
     if (whereInClause?.terminal_ids?.length) {
       query.whereIn(TERMINAL.COLUMNS.TERMINAL_ID, whereInClause.terminal_ids);
+    }
+
+    if (whereInClause?.mac_addresses?.length) {
+      query.whereIn(TERMINAL.COLUMNS.MAC_ADDRESS, whereInClause.mac_addresses);
     }
 
     logQuery({ query, context: "Get Terminal" });
@@ -91,11 +98,45 @@ function TerminalRepo() {
     return deletedTerminal;
   }
 
+  async function getTerminalsGroupedByOutlet({ filters = {} }) {
+    const knex = this;
+
+    const { where: whereClause } = filters;
+
+    const query = knex(TERMINAL.NAME)
+      .select(TERMINAL.COLUMNS.OUTLET_ID)
+      .select(
+        knex.raw(`
+          json_agg(
+            json_build_object(
+              'terminal_id', ${TERMINAL.COLUMNS.TERMINAL_ID},
+              'terminal_name', ${TERMINAL.COLUMNS.TERMINAL_NAME},
+              'mac_address', ${TERMINAL.COLUMNS.MAC_ADDRESS},
+              'status', ${TERMINAL.COLUMNS.STATUS}
+            )
+            ORDER BY ${TERMINAL.COLUMNS.TERMINAL_ID}
+          ) as terminals
+        `)
+      )
+      .groupBy(TERMINAL.COLUMNS.OUTLET_ID);
+
+    if (whereClause) {
+      query.where(whereClause);
+    }
+
+    logQuery({ query, context: "Get Terminals Grouped By Outlet" });
+
+    const groupedTerminals = await query;
+
+    return groupedTerminals;
+  }
+
   return {
     getTerminal,
     createTerminal,
     updateTerminal,
-    deleteTerminal
+    deleteTerminal,
+    getTerminalsGroupedByOutlet
   };
 }
 

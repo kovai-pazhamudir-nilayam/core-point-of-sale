@@ -8,8 +8,9 @@ function postTerminalService(fastify) {
   const emitTerminalEvent = emitTerminalEventService(fastify);
 
   return async ({ input }) => {
-    const { audit, edc_device, ...restTerminal } = input;
+    const { audit, edc_device, mac_address, ...restTerminal } = input;
     const terminal = {
+      mac_address: mac_address.toLowerCase(),
       edc_device: JSON.stringify(edc_device),
       ...restTerminal,
       ...apiToDb({ audit })
