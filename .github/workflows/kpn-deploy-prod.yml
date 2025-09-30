@@ -16,7 +16,7 @@ env:
   CLUSTER_NAME: ${{ secrets.KPN_GKE_CLUSTER_PRD }}
   PROJECT_ID: ${{ secrets.KPN_GCP_PROJECT_ID_PRD }}
   GOOGLE_PRIVATE_KEY: ${{ secrets.KPN_GOOGLE_PRIVATE_KEY_PRD }}
-  NAMESPACE: kpn
+  NAMESPACE: core-commerce
   VALUES_FILE: deployment/charts/config/kpn/kpn-values-prod.yaml
 
 jobs:

@@ -15,7 +15,7 @@ env:
   CLUSTER_NAME: ${{ secrets.EBONO_GKE_CLUSTER_PRD }}
   PROJECT_ID: ${{ secrets.EBONO_GCP_PROJECT_ID_PRD }}
   GOOGLE_PRIVATE_KEY: ${{ secrets.EBONO_GOOGLE_PRIVATE_KEY_PRD }}
-  NAMESPACE: ebono
+  NAMESPACE: core-commerce
   VALUES_FILE: deployment/charts/config/ebono/ebono-values-prod.yaml
 
 jobs:

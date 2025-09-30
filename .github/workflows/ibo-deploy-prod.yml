@@ -15,7 +15,7 @@ env:
   CLUSTER_NAME: ${{ secrets.IBO_GKE_CLUSTER_PRD }}
   PROJECT_ID: ${{ secrets.IBO_GCP_PROJECT_ID_PRD }}
   GOOGLE_PRIVATE_KEY: ${{ secrets.IBO_GOOGLE_PRIVATE_KEY_PRD }}
-  NAMESPACE: ebo
+  NAMESPACE: core-commerce
   VALUES_FILE: deployment/charts/config/ibo/ibo-values-prod.yaml
 
 jobs:

@@ -89,7 +89,7 @@ gcp:
   enabled: false
 
 database:
-  enabled: false
+  enabled: true
 
 destinationPolicy:
   maxConnections: 6000
