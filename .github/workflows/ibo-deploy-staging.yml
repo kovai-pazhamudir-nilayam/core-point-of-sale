@@ -16,11 +16,11 @@ env:
   PROJECT_ID: ${{ secrets.IBO_GCP_PROJECT_ID_STG }}
   GOOGLE_PRIVATE_KEY: ${{ secrets.IBO_GOOGLE_PRIVATE_KEY_STG }}
   NAMESPACE: ebo
-  VALUES_FILE: deployment/charts/config/ibo/ibo-values-local-staging.yaml
+  VALUES_FILE: deployment/charts/config/ibo/ibo-values-staging.yaml
 
 jobs:
   node-build-deploy:
-    runs-on: core-app
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -68,5 +68,5 @@ jobs:
         env:
           HELM_OPTS: --set-string environmentVariables.GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID_STG }}
         run: |
-          helm upgrade --install --wait core-point-of-sale deployment/charts/$APP_NAME --namespace core-commerce $HELM_OPTS --set image.tag=$GITHUB_SHA  -f deployment/charts/config/values-staging.yaml
+          helm upgrade --install --wait core-point-of-sale deployment/charts/$APP_NAME --namespace core-commerce $HELM_OPTS --set image.tag=$GITHUB_SHA  -f $VALUES_FILE
 

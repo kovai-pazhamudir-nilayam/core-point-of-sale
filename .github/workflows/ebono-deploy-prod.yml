@@ -16,11 +16,11 @@ env:
   PROJECT_ID: ${{ secrets.EBONO_GCP_PROJECT_ID_PRD }}
   GOOGLE_PRIVATE_KEY: ${{ secrets.EBONO_GOOGLE_PRIVATE_KEY_PRD }}
   NAMESPACE: ebono
-  VALUES_FILE: deployment/charts/config/ebono/ebono-values-local-prod.yaml
+  VALUES_FILE: deployment/charts/config/ebono/ebono-values-prod.yaml
 
 jobs:
   node-build-deploy:
-    runs-on: core-app
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -68,5 +68,5 @@ jobs:
         env:
           HELM_OPTS: --set-string environmentVariables.GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID_PRD }}
         run: |
-          helm upgrade --install --wait core-point-of-sale deployment/charts/$APP_NAME --namespace core-commerce $HELM_OPTS --set image.tag=$GITHUB_SHA -f deployment/charts/config/values-prod.yaml
+          helm upgrade --install --wait core-point-of-sale deployment/charts/$APP_NAME --namespace core-commerce $HELM_OPTS --set image.tag=$GITHUB_SHA -f $VALUES_FILE
 
