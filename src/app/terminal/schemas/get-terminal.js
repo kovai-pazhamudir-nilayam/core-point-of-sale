@@ -28,6 +28,7 @@ const getTerminal = {
         is_edc_integrated: { type: "boolean" },
         is_static_qr_code_enabled: { type: "boolean" },
         non_integrated_edc_allowed_mode: { type: "string" },
+        training_allowed_mode: { type: "string" },
         edc_device: {
           type: "array",
           items: {

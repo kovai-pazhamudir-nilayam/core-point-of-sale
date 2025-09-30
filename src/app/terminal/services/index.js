@@ -15,6 +15,7 @@ const getTerminalRegisterDayendListService = require("./get-terminal-register-da
 const getTerminalRegisterDayendService = require("./get-terminal-register-dayend");
 const getTerminalTransactionService = require("./get-terminal-transaction");
 const postTerminalBulkEventsService = require("./post-terminal-bulk-events");
+const getTerminalDetailsService = require("./get-terminal-details");
 
 module.exports = {
   postTerminalService,
@@ -33,5 +34,6 @@ module.exports = {
   getTerminalRegisterDayendListService,
   getTerminalRegisterDayendService,
   getTerminalTransactionService,
-  postTerminalBulkEventsService
+  postTerminalBulkEventsService,
+  getTerminalDetailsService
 };

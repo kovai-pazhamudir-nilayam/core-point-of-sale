@@ -17,6 +17,7 @@ const postTerminalUsageSync = require("./post-terminal-usage-sync");
 const postTerminalRegisterSync = require("./post-terminal-register-sync");
 const getTerminalTransaction = require("./get-terminal-transaction");
 const postTerminalBulkEvents = require("./post-terminal-bulk-events");
+const getTerminalDetails = require("./get-terminal-details");
 
 module.exports = {
   postTerminal,
@@ -37,5 +38,6 @@ module.exports = {
   getTerminalRegisterDayendList,
   getTerminalRegisterDayend,
   getTerminalTransaction,
-  postTerminalBulkEvents
+  postTerminalBulkEvents,
+  getTerminalDetails
 };

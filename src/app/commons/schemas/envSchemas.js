@@ -16,6 +16,7 @@ exports.envSchema = {
     AUTH_TOKEN: { type: "string" },
     POINT_OF_SALE_EVENT_TOPIC: { type: "string" },
     AUDIT_EVENT_TOPIC: { type: "string" },
-    IS_AUDIT_ENALBLED: { type: "string" }
+    IS_AUDIT_ENALBLED: { type: "string" },
+    ENVIRONMENT: { type: "string" }
   }
 };

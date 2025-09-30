@@ -7,7 +7,7 @@ function emitOutletDeviceEventService(fastify) {
   return async ({ outlet_id, eventType }) => {
     try {
       const outletDevices = await getOutletDevice.call(fastify.knex, {
-        where: { outlet_id }
+        filters: { where: { outlet_id } }
       });
 
       const payload = { outlet_id, data: outletDevices };

@@ -17,7 +17,8 @@ module.exports = async fastify => {
     getTerminalRegisterDayendList,
     getTerminalRegisterDayend,
     getTerminalTransaction,
-    postTerminalBulkEvents
+    postTerminalBulkEvents,
+    getTerminalDetails
   } = TerminalHandler;
 
   fastify.route({
@@ -32,6 +33,13 @@ module.exports = async fastify => {
     url: "/terminal",
     schema: schemas.getTerminal,
     handler: getTerminal(fastify)
+  });
+
+  fastify.route({
+    method: "GET",
+    url: "/terminal/details/:mac_address",
+    schema: schemas.getTerminalDetails,
+    handler: getTerminalDetails(fastify)
   });
 
   fastify.route({

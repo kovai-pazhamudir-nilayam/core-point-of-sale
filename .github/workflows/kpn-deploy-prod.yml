@@ -1,19 +1,23 @@
-name: PROD - Build and Deploy
+name: KPN PROD - Build and Deploy
 
 on:
   push:
     tags:
-      - "v*"
+      - 'vk*'
 
 env:
-  GKE_PROJECT: ${{ secrets.GCP_PROJECT_ID_PRD }}
   GCR_GKE_PROJECT: kpn-platform-components
   GITHUB_SHA: ${{ github.sha }}
   GKE_ZONE: asia-south1
   IMAGE: core-point-of-sale
-  REGISTRY_HOSTNAME: us-docker.pkg.dev
   REPOSITORY: us.gcr.io
+  REGISTRY_HOSTNAME: us-docker.pkg.dev
   APP_NAME: core-point-of-sale
+  CLUSTER_NAME: ${{ secrets.KPN_GKE_CLUSTER_PRD }}
+  PROJECT_ID: ${{ secrets.KPN_GCP_PROJECT_ID_PRD }}
+  GOOGLE_PRIVATE_KEY: ${{ secrets.KPN_GOOGLE_PRIVATE_KEY_PRD }}
+  NAMESPACE: kpn
+  VALUES_FILE: deployment/charts/config/kpn/kpn-values-local-prod.yaml
 
 jobs:
   node-build-deploy:
@@ -31,17 +35,17 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - id: "auth"
-        uses: "google-github-actions/auth@v1"
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
         with:
-          credentials_json: ${{ secrets.GOOGLE_PRIVATE_KEY_PRD }}
+          credentials_json: ${{env.GOOGLE_PRIVATE_KEY}}
 
-      - id: "get-credentials"
-        uses: "google-github-actions/get-gke-credentials@v1"
+      - id: 'get-credentials'
+        uses: 'google-github-actions/get-gke-credentials@v1'
         with:
-          cluster_name: ${{ secrets.GKE_CLUSTER_PRD }}
-          project_id: ${{ secrets.GCP_PROJECT_ID_PRD }}
-          location: "asia-south1"
+          cluster_name: ${{ env.CLUSTER_NAME }}
+          project_id: ${{env.PROJECT_ID}}
+          location: 'asia-south1'
 
       - name: build-login-publish-docker image
         uses: ebomart/build-publish-docker-artifact@main
@@ -50,9 +54,9 @@ jobs:
           gke_project: $GCR_GKE_PROJECT
           repository: $REPOSITORY
           image_name: $IMAGE
-          google_private_key: ${{ secrets.GOOGLE_PRIVATE_KEY_PRD }}
+          google_private_key: ${{env.GOOGLE_PRIVATE_KEY}}
           sha: ${{ github.sha }}
-          docker_build_args: "--build-arg NPM_TOKEN=$NPM_TOKEN"
+          docker_build_args: '--build-arg NPM_TOKEN=$NPM_TOKEN'
           npm_token: ${{ secrets.NPM_TOKEN }}
 
       # Install helm
@@ -66,3 +70,4 @@ jobs:
           HELM_OPTS: --set-string environmentVariables.GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID_PRD }}
         run: |
           helm upgrade --install --wait core-point-of-sale deployment/charts/$APP_NAME --namespace core-commerce $HELM_OPTS --set image.tag=$GITHUB_SHA -f deployment/charts/config/values-prod.yaml
+

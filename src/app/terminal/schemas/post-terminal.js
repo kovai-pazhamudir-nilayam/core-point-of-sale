@@ -20,6 +20,10 @@ const postTerminal = {
         type: "string",
         enum: ["ENABLED", "ENABLED_WITH_AUTH", "DISABLED"]
       },
+      training_allowed_mode: {
+        type: "string",
+        enum: ["ENABLED", "ENABLED_WITH_AUTH", "DISABLED"]
+      },
       returns_enabled_mode: {
         type: "string",
         enum: ["ENABLED", "ENABLED_WITH_AUTH", "DISABLED"]
